@@ -110,7 +110,10 @@ fun SchoolListItemUi(
         onClick = onClick
 //        backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.padding(8.dp)
+        ) {
             Text(
                 text = schoolListItem.schoolName,
                 textAlign = TextAlign.Center

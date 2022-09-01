@@ -454,8 +454,8 @@ data class SchoolListItem(
 //    val pctStuEnoughVariety: String,
 //    @SerializedName("pct_stu_safe")
 //    val pctStuSafe: String,
-//    @SerializedName("phone_number")
-//    val phoneNumber: String,
+    @SerializedName("phone_number")
+    val phoneNumber: String,
 //    @SerializedName("prgdesc1")
 //    val prgdesc1: String,
 //    @SerializedName("prgdesc10")

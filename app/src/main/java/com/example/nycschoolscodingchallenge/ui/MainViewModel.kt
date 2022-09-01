@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nycschoolscodingchallenge.model.SchoolDetail
+import com.example.nycschoolscodingchallenge.model.SchoolDetailList
 import com.example.nycschoolscodingchallenge.model.SchoolList
 import com.example.nycschoolscodingchallenge.model.SchoolListItem
 import com.example.nycschoolscodingchallenge.repo.Repository
@@ -23,8 +24,8 @@ class MainViewModel @Inject constructor(
     private val _schoolList: MutableLiveData<SchoolList> = MutableLiveData()
     val schoolList: LiveData<SchoolList> = _schoolList
 
-    private val _schoolDetail: MutableLiveData<SchoolDetail> = MutableLiveData()
-    val schoolDetail: LiveData<SchoolDetail> = _schoolDetail
+    private val _schoolDetail: MutableLiveData<SchoolDetail?> = MutableLiveData()
+    val schoolDetail: LiveData<SchoolDetail?> = _schoolDetail
 
     init {
         getSchoolList()
@@ -48,10 +49,12 @@ class MainViewModel @Inject constructor(
 
     fun getSchoolDetail(schoolName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response = repository.getSchoolDetail(schoolName)
-                if (response.isSuccessful) _schoolDetail.postValue(response.body())
-            } catch (e: Exception) {}
+//            try {
+            val response = repository.getSchoolDetail(schoolName)
+            if (response.isSuccessful && response.body()?.isNotEmpty() == true)
+                _schoolDetail.postValue(response.body()!![0])
+            else _schoolDetail.postValue(null)
+//            } catch (e: Exception) {}
         }
     }
 }
