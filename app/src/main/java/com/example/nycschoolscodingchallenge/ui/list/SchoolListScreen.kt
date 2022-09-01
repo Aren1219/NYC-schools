@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.nycschoolscodingchallenge.model.SchoolList
 import com.example.nycschoolscodingchallenge.model.SchoolListItem
@@ -85,11 +86,14 @@ fun SchoolListUi(
     selectSchool: (SchoolListItem) -> Unit,
     search: String
 ) {
+    val p = 12.dp
     LazyColumn(
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(p),
+        verticalArrangement = Arrangement.spacedBy(p)
     ){
-        items(schoolList){ schoolItem ->
+        items(schoolList.filter {
+            it.schoolName.contains(search, true)
+        }){ schoolItem ->
             SchoolListItemUi(
                 schoolListItem = schoolItem,
                 onClick = { selectSchool(schoolItem) }
@@ -108,19 +112,19 @@ fun SchoolListItemUi(
     Card(
         modifier = modifier.fillMaxWidth(),
         onClick = onClick
-//        backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.padding(8.dp)
+            modifier = modifier.padding(12.dp)
         ) {
             Text(
                 text = schoolListItem.schoolName,
-                textAlign = TextAlign.Center
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = schoolListItem.website,
-                textAlign = TextAlign.Center
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
