@@ -6,10 +6,9 @@ import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.nycschoolscodingchallenge.model.SchoolDetail
 import com.example.nycschoolscodingchallenge.model.SchoolList
 import com.example.nycschoolscodingchallenge.model.SchoolListItem
@@ -25,7 +25,8 @@ import com.example.nycschoolscodingchallenge.ui.MainViewModel
 @Composable
 fun SchoolDetailScreen(
     viewModel: MainViewModel,
-    schoolName: String
+    schoolName: String,
+    navHostController: NavHostController
 ) {
 
     val schoolItem = viewModel.getSchoolItem(schoolName)
@@ -36,7 +37,10 @@ fun SchoolDetailScreen(
     val schoolDetail by viewModel.schoolDetail.observeAsState()
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        SchoolItemDetailUi(schoolItem!!)
+        SchoolItemDetailUi(
+            schoolListItem = schoolItem!!,
+            backBtnClicked = { navHostController.navigate("schoolList") }
+        )
         if (schoolDetail?.numOfSatTestTakers?.matches(Regex("[0-9]+")) == true)
             schoolDetail?.let { SATDetailUi(it) }
     }
@@ -45,7 +49,8 @@ fun SchoolDetailScreen(
 @Composable
 fun SchoolItemDetailUi(
     schoolListItem: SchoolListItem,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    backBtnClicked: () -> Unit
 ){
     val p = 12.dp
     Card(
@@ -55,12 +60,19 @@ fun SchoolItemDetailUi(
         elevation = 12.dp
     ) {
         Column() {
-
-            Text(
-                text = schoolListItem.schoolName,
-                style = MaterialTheme.typography.h5,
-                modifier = Modifier.padding(p)
-            )
+            Row() {
+                IconButton(onClick =  backBtnClicked ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "back"
+                    )
+                }
+                Text(
+                    text = schoolListItem.schoolName,
+                    style = MaterialTheme.typography.h5,
+                    modifier = Modifier.padding(p)
+                )
+            }
             if (schoolListItem.website != null)
             Text(
                 text = schoolListItem.website,

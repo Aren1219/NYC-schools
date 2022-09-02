@@ -62,7 +62,8 @@ fun MainScreen(
                 ) { backStackEntry ->
                     SchoolDetailScreen(
                         viewModel = viewModel,
-                        schoolName = backStackEntry.arguments?.getString("schoolName")!!
+                        schoolName = backStackEntry.arguments?.getString("schoolName")!!,
+                        navHostController = navController
                     )
                 }
             }
