@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(
 
     fun getSchoolDetail(schoolName: String) {
         if (schoolDetail.value?.schoolName.equals(schoolName, true)) return
-        _schoolDetail.postValue(null)
+        if (schoolDetail.value != null) _schoolDetail.postValue(null)
         job?.cancel()
         job = viewModelScope.launch(Dispatchers.IO) {
             try {

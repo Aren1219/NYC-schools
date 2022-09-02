@@ -44,7 +44,6 @@ fun SchoolDetailScreen(
         if (schoolDetail?.numOfSatTestTakers?.matches(Regex("[0-9]+")) == true)
             schoolDetail?.let { SATDetailUi(it) }
     }
-
 }
 @Composable
 fun SchoolItemDetailUi(
