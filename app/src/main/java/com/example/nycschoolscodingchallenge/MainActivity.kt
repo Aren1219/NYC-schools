@@ -8,12 +8,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -45,7 +47,7 @@ fun MainScreen(
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.surface
+            color = MaterialTheme.colors.background
         ) {
             NavHost(navController = navController, startDestination = "schoolList") {
                 composable("schoolList") {
@@ -54,13 +56,14 @@ fun MainScreen(
                         onNavigateToDetail = {schoolName -> navController.navigate("schoolDetail/$schoolName")}
                     )
                 }
-                composable("schoolDetail/{schoolName}",) { backStackEntry ->
-                    backStackEntry.arguments?.getString("schoolName")?.let {
-                        SchoolDetailScreen(
-                            viewModel = viewModel,
-                            schoolName = it.uppercase()
-                        )
-                    }
+                composable(
+                    route = "schoolDetail/{schoolName}",
+                    arguments = listOf(navArgument("schoolName") {type = NavType.StringType})
+                ) { backStackEntry ->
+                    SchoolDetailScreen(
+                        viewModel = viewModel,
+                        schoolName = backStackEntry.arguments?.getString("schoolName")!!
+                    )
                 }
             }
         }

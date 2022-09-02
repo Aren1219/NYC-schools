@@ -1,5 +1,6 @@
 package com.example.nycschoolscodingchallenge.ui.detail
 
+import android.util.Log
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.*
@@ -9,11 +10,8 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,12 +28,15 @@ fun SchoolDetailScreen(
     schoolName: String
 ) {
 
-    viewModel.getSchoolDetail(schoolName)
-    val schoolDetail by viewModel.schoolDetail.observeAsState()
     val schoolItem = viewModel.getSchoolItem(schoolName)
+    LaunchedEffect(key1 = schoolName){
+        viewModel.getSchoolDetail(schoolName.uppercase())
+    }
+
+    val schoolDetail by viewModel.schoolDetail.observeAsState()
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        schoolItem?.let { SchoolItemDetailUi(it) }
+        SchoolItemDetailUi(schoolItem!!)
         if (schoolDetail?.numOfSatTestTakers?.matches(Regex("[0-9]+")) == true)
             schoolDetail?.let { SATDetailUi(it) }
     }
@@ -50,7 +51,8 @@ fun SchoolItemDetailUi(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(p)
+            .padding(p),
+        elevation = 12.dp
     ) {
         Column() {
 
@@ -96,6 +98,7 @@ fun SATDetailUi(
 ) {
     val p = 12.dp
     Card(
+        elevation = 12.dp,
         modifier = modifier
             .fillMaxWidth()
             .padding(start = p, top = 0.dp, end = p, bottom = p)

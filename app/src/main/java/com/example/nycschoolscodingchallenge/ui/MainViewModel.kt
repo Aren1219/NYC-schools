@@ -12,6 +12,7 @@ import com.example.nycschoolscodingchallenge.model.SchoolListItem
 import com.example.nycschoolscodingchallenge.repo.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -26,6 +27,8 @@ class MainViewModel @Inject constructor(
 
     private val _schoolDetail: MutableLiveData<SchoolDetail?> = MutableLiveData()
     val schoolDetail: LiveData<SchoolDetail?> = _schoolDetail
+
+    var job: Job? = null
 
     init {
         getSchoolList()
@@ -42,19 +45,23 @@ class MainViewModel @Inject constructor(
 
     fun getSchoolItem(schoolName: String): SchoolListItem? {
         for (item in schoolList.value!!){
-            if (item.schoolName.uppercase() == schoolName.uppercase()) return item
+            if (item.schoolName.equals(schoolName, true)) return item
         }
         return null
     }
 
     fun getSchoolDetail(schoolName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-//            try {
-            val response = repository.getSchoolDetail(schoolName)
-            if (response.isSuccessful && response.body()?.isNotEmpty() == true)
-                _schoolDetail.postValue(response.body()!![0])
-            else _schoolDetail.postValue(null)
-//            } catch (e: Exception) {}
+        if (schoolDetail.value?.schoolName.equals(schoolName, true)) return
+
+        _schoolDetail.postValue(null)
+        job?.cancel()
+        job = viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = repository.getSchoolDetail(schoolName)
+                if (response.isSuccessful && response.body()?.isNotEmpty() == true)
+                    _schoolDetail.postValue(response.body()!![0])
+                else _schoolDetail.postValue(null)
+            } catch (e: Exception) {}
         }
     }
 }

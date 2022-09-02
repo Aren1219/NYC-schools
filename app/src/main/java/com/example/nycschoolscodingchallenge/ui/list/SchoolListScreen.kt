@@ -111,7 +111,8 @@ fun SchoolListItemUi(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        onClick = onClick
+        onClick = onClick,
+        elevation = 12.dp
     ) {
         Column(
             modifier = modifier.padding(12.dp)
